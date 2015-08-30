@@ -1,0 +1,122 @@
+/*
+ *Aluna: Cristiane T.Fischer.R 
+ */
+
+/*1. Listar id, primeiro nome, e quantidade de pedidos efetuados pelos clientes que tem o nome iniciando pela letra "A" em ordem alfabética.*/
+
+select 
+    customers.id,
+        ccustomers.first_name || ' ' ||
+customers.last_name,
+    count( invoices.total ) count_of_total
+from customers
+    left join invoices on (customers.id = invoices.customer_id)
+where 
+   (
+      (customers.first_name like 'A%')
+   )
+group by customers.id, customers.first_name, customers.last_name
+order by customers.first_name
+
+
+/*2. Listar id cliente, nome cliente, id pedido, total do pedido para os 3 pedidos com os maiores valores totais efetuados para a cidade chamada "Seattle".*/
+
+select 
+    first 3
+    customers.id,
+    customers.first_name || ' ' ||
+customers.last_name,
+    invoices.id,
+    sum( invoices.total) cost
+from customers
+   inner join invoices on (customers.id = invoices.customer_id)
+where 
+   (
+      (customers.city like 'Seattle%')
+   )
+group by customers.id, customers.first_name, customers.last_name, invoices.id
+order by cost desc
+
+
+
+/*3. Listar o id do produto, nome do produto, e valor total(item.quantidade X produto.preço) em todos os pedidos em que ele foi mencionado.*/
+
+select
+products.id,
+products.name,
+(items.quantity * products.price) as vlr_total
+from products
+    join items on (products.id = items.product_id)
+
+/*4. Listar nome do cliente, quantidade dos pedidos, e média do valor dos pedidos por cliente.*/
+
+select
+customers.first_name || ' ' ||
+customers.last_name,
+count(invoices.id),
+avg(items.quantity * items.cost) as media
+from customers
+    join invoices on (invoices.customer_id = customers.id)
+    join items on (invoices.id = items.invoice_id)
+    group BY customers.first_name, customers.last_name
+
+
+/*5. Listar nome do produto e a média da quantidade vendida por pedido.*/
+
+select products.name,
+avg(items.quantity)
+from products
+join items on (products.id = items.product_id)
+group by products.name
+
+/*6. Listar produtos com quantidade total vendida maior que 10, para a rua que contenha "Seventh Av." no nome.*/
+
+select 
+    products.name,
+    sum(items.quantity) as total
+from Products
+   join items on (products.id = items.product_id)
+   join invoices on (items.invoice_id = invoices.id)
+   join customers on (invoices.customer_id = customers.id) /*in (select customers.id
+   from customers
+   where customers.street like '%Seventh Av.%')) */
+where total > 10
+       and
+        customers.street like '%Seventh Av.%'
+      group by products.name
+
+
+/*7. Listar os somente os produtos que ainda não estão relacionados a nenhum pedidos.*/
+
+select distinct
+products.name
+from products
+where products.id not in (select items.product_id from items)
+
+/*8. Listar somente os clientes que já estão relacionados a algum pedido.*/
+
+select
+customers.first_name || ' ' ||
+customers.last_name
+from customers
+where customers.id  in (select invoices.customer_id from invoices)
+
+/*9. Listar nome do cliente e rua quando a cidade for "New York".*/
+
+SELECT A.id,
+       A.first_name ||' '||A.last_name,
+       A.city
+ FROM customers A
+WHERE A.city LIKE '%New York%'
+
+/*10. Listar distintamente o nome dos produtos comprados por "Laura".*/
+SELECT A.id, A.name,
+       B.id "ID CUSTOMER",
+       B.first_name "NOME COMPRADOR",
+       C.customer_id
+  FROM products A,
+       customers B,
+       invoices C
+ WHERE A.id = C.id
+   AND A.id = B.id
+   AND B.first_name LIKE '%Laura%'
