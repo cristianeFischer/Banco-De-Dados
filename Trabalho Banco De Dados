@@ -3,7 +3,6 @@
  */
 
 /*1. Listar id, primeiro nome, e quantidade de pedidos efetuados pelos clientes que tem o nome iniciando pela letra "A" em ordem alfabética.*/
-
 select 
     customers.id,
         ccustomers.first_name || ' ' ||
@@ -17,10 +16,12 @@ where
    )
 group by customers.id, customers.first_name, customers.last_name
 order by customers.first_name
+/*
+  -> ccustomers não existe, porém considerei certa
+*/
 
 
 /*2. Listar id cliente, nome cliente, id pedido, total do pedido para os 3 pedidos com os maiores valores totais efetuados para a cidade chamada "Seattle".*/
-
 select 
     first 3
     customers.id,
@@ -36,11 +37,13 @@ where
    )
 group by customers.id, customers.first_name, customers.last_name, invoices.id
 order by cost desc
-
+/*
+  -> Considerei certa, porém de preferencia a usar "limit" em vez de "first", pois faz parte do padrã e irá funcionar em todos os bancos
+  -> "cost" também é algo especifico do banco que você usou
+*/
 
 
 /*3. Listar o id do produto, nome do produto, e valor total(item.quantidade X produto.preço) em todos os pedidos em que ele foi mencionado.*/
-
 select
 products.id,
 products.name,
@@ -49,7 +52,6 @@ from products
     join items on (products.id = items.product_id)
 
 /*4. Listar nome do cliente, quantidade dos pedidos, e média do valor dos pedidos por cliente.*/
-
 select
 customers.first_name || ' ' ||
 customers.last_name,
@@ -59,10 +61,12 @@ from customers
     join invoices on (invoices.customer_id = customers.id)
     join items on (invoices.id = items.invoice_id)
     group BY customers.first_name, customers.last_name
+/*
+ -> A média do valor dos pedidos deve ser feita com o campo invoices.total, porém considerei certa
+*/
 
 
 /*5. Listar nome do produto e a média da quantidade vendida por pedido.*/
-
 select products.name,
 avg(items.quantity)
 from products
@@ -70,7 +74,6 @@ join items on (products.id = items.product_id)
 group by products.name
 
 /*6. Listar produtos com quantidade total vendida maior que 10, para a rua que contenha "Seventh Av." no nome.*/
-
 select 
     products.name,
     sum(items.quantity) as total
@@ -84,17 +87,19 @@ where total > 10
        and
         customers.street like '%Seventh Av.%'
       group by products.name
+/*
+ -> invoices.total se refere ao valor total do pedido em moeda
+ -> a quantidade total vendida precisa de SUM em items.quantity
+*/
 
 
 /*7. Listar os somente os produtos que ainda não estão relacionados a nenhum pedidos.*/
-
 select distinct
 products.name
 from products
 where products.id not in (select items.product_id from items)
 
 /*8. Listar somente os clientes que já estão relacionados a algum pedido.*/
-
 select
 customers.first_name || ' ' ||
 customers.last_name
@@ -102,12 +107,14 @@ from customers
 where customers.id  in (select invoices.customer_id from invoices)
 
 /*9. Listar nome do cliente e rua quando a cidade for "New York".*/
-
 SELECT A.id,
        A.first_name ||' '||A.last_name,
        A.city
  FROM customers A
 WHERE A.city LIKE '%New York%'
+/*
+ ->Listou a cidade e não a rua
+*/
 
 /*10. Listar distintamente o nome dos produtos comprados por "Laura".*/
 SELECT A.id, A.name,
@@ -120,3 +127,6 @@ SELECT A.id, A.name,
  WHERE A.id = C.id
    AND A.id = B.id
    AND B.first_name LIKE '%Laura%'
+/*
+  ->Faltou o distinct para selecionar distintamente
+*/
