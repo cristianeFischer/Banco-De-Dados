@@ -1,9 +1,9 @@
-  /*1- Mostrar o valor de todas os pedidos juntos.*/
+  /*1- Mostrar o valor de todas os pedidos juntos. 2,00*/
 
    SELECT SUM (invoices.total) as total from invoices
 
 
-/*2- Mostrar a quantidade de produtos vendidos por rua.*/
+/*2- Mostrar a quantidade de produtos vendidos por rua. 1,50 faltou fazer o sum no items.qunatity*/
  SELECT
  items.quantity,
  customers.street
@@ -12,7 +12,7 @@ inner join invoices on invoices.id = items.invoice_id
 inner join customers on customers.id = invoices.customer_id
 order by items.quantity asc
 
-/*3- Mostrar qual o produto com o maior valor vendido em cada cidade.*/
+/*3- Mostrar qual o produto com o maior valor vendido em cada cidade. 0,5 por tentar*/
 SELECT
 (products.name),
  customers.city,
@@ -27,7 +27,7 @@ invoices.total,
 customers.city
 order by customers.city asc
 
-/*4- Mostrar os produtos vendidos na rua chamada 'Olten' com o valor unitário médio.*/
+/*4- Mostrar os produtos vendidos na rua chamada 'Olten' com o valor unitário médio. 1,50 faltou avg(items.cost)*/
  SELECT
  items.product_id,
  customers.street
@@ -38,11 +38,14 @@ group by
 customers.street = 'Olten';
 
 
-/*5- Mostrar os clientes que tem o mesmo nome(first_name) e quantas vezes o nome se repete.*/
+/*5- Mostrar os clientes que tem o mesmo nome(first_name) e quantas vezes o nome se repete. 0,5 por tentar*/
          SELECT count(*) as Repetir,
           customers.first_name
            FROM customers
 GROUP BY customers.first_name 
 ORDER BY repetir DESC
-/*6- Mostrar a maior venda efetuada.*/
+/*6- Mostrar a maior venda efetuada. 2,00*/
  SELECT max (invoices.total) as maior from invoices
+
+
+8,00 nota final
